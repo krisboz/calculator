@@ -5,18 +5,28 @@ let firstOperator = null;
 let secondOperator = null;
 let result = null;
 
-const updateDOM = () => {
-    const display = document.querySelector(".display");
-    display.innerText = displayValue.toString();
+const showData = () => {
+    console.log({
+        displayValue,
+        firstNumber,
+        secondNumber,
+        firstOperator,
+        secondOperator,
+        result
+    })
 }
 
+const updateDOM = () => {
+    const display = document.querySelector(".display");
+    display.innerText = displayValue;
+}
+//1stnum, 2ndnum, firstop, 2nd op, dispVal
 const inputNumber = (number) => {
-
-    if (firstNumber === null){
-        if (displayValue === "0" || displayValue === 0) {
+    if (firstNumber === null) {
+        if(displayValue === "0" || displayValue === 0) {
             displayValue = number;
         } else if (displayValue === firstNumber) {
-            displayValue = number
+            displayValue = number;
         } else {
             displayValue += number;
         }
@@ -27,8 +37,6 @@ const inputNumber = (number) => {
             displayValue += number;
         }
     }
-
-
 }
 
 const inputOperator = (operator) => {
@@ -36,17 +44,23 @@ const inputOperator = (operator) => {
     if (firstOperator != null && secondOperator === null) {
         secondOperator = operator;
         secondNumber = displayValue;
-        result = operate(parseFloat(firstNumber), parseFloat(secondNumber), firstOperator)
-        displayValue = result.toString();
-        firstOperand = displayValue;
-        result = null;
-    } else if (firstOperator !=null && secondOperator != null) {
+        result = operate(firstNumber, secondNumber, firstOperator);
+        firstNumber = result;
+        displayValue = firstNumber;
+        secondNumber = null;
+
+
+
+        
+    } else if (firstOperator != null && secondOperator != null) {
         secondNumber = displayValue;
-        result = operate(parseFloat(firstNumber), parseFloat(secondNumber), secondOperator);
+        firstOperator = secondOperator;
         secondOperator = operator;
-        displayValue = result.toString();
-        firstNumber = displayValue
-        result = null;
+        result = operate(firstNumber, secondNumber, firstOperator);
+        displayValue = result;
+        firstNumber = displayValue;
+        secondNumber = null;
+        
 
     } else {
         firstOperator = operator;
@@ -55,69 +69,36 @@ const inputOperator = (operator) => {
 
 }
 
-const inputEquals = () => {
-    if (firstOperator === null) {
-        displayValue = displayValue
-        //TODO
-    } else if (secondOperator != null) {
-        secondNumber = displayValue;
-        result = operate(parseFloat(firstNumber), parseFloat(secondNumber), secondOperator);
-        //todo if the user divides by 0
-        displayValue = result.toString();
-        firstNumber = displayValue;
-        secondNumber = null;
-        firstOperator = null;
-        secondOperator = null;
-        result = null;
-    } else {
-        secondNumber = displayValue;
-        result = operate(parseFloat(firstNumber), parseFloat(secondNumber), firstOperator)
-        displayValue = result.toString();
-        firstNumber = displayValue;
-        secondNumber = null;
-        firstOperator = null;
-        secondOperator = null;
-        result = null;
-    }
-}
 
 const operate = (a, b, operator) => {
     if (operator === "add") {
-        return a + b
+        return parseFloat(a) + parseFloat(b)
     } else if (operator === "subtract") {
-        return a - b
+        return parseFloat(a) - parseFloat(b)
     } else if (operator === "multiply") {
-        return a * b
+        return parseFloat(a) * parseFloat(b)
     } else if (operator === "divide") {
-        return a / b
+        return parseFloat(a) / parseFloat(b)
     }
 }
 
-
-//Add event listeners for the buttons
 document.querySelector(".buttons").addEventListener("click", e => {
 
-    let target = e.target.classList;
-    if(target.contains("number")) {
+    if (e.target.classList.contains("number")) {
+        //Handle num click
         inputNumber(e.target.dataset.value)
         updateDOM();
-        //DO number logic
-    } else if (target.contains("operator")) {
+        showData();
+        //UpdateDOM
+    } else if (e.target.classList.contains("operator")) {
+        //Handle op click
         inputOperator(e.target.dataset.value)
         updateDOM();
-        //Do operator logic
-    } else if (target.contains("equals")) {
+        showData();
+        //UpdateDOM
+    } else if (e.target.classList.contains("equals")) {
         console.log("equals")
-        inputEquals();
-        updateDOM();
-        //Do equals logic
+        //Handle equal click
+        //UpdateDOM
     }
-    
 })
-
-//curr writing number
-//past number
-//pressed operator currently
-//last pressed operator
-
-//15 + 3 + 27 - 5
